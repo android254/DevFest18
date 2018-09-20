@@ -1,21 +1,20 @@
 package droiddevelopers254.droidconke.viewmodels;
 
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.LiveDataReactiveStreams;
 import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.ViewModel;
 
-import droiddevelopers254.droidconke.database.entities.SessionsEntity;
 import droiddevelopers254.droidconke.datastates.RoomState;
 import droiddevelopers254.droidconke.datastates.SessionDataState;
 import droiddevelopers254.droidconke.datastates.SpeakersState;
 import droiddevelopers254.droidconke.datastates.StarSessionState;
+import droiddevelopers254.droidconke.models.SessionsModel;
 import droiddevelopers254.droidconke.models.StarredSessionModel;
 import droiddevelopers254.droidconke.repository.RoomRepo;
 import droiddevelopers254.droidconke.repository.SessionDataRepo;
 import droiddevelopers254.droidconke.repository.SpeakersRepo;
-import droiddevelopers254.droidconke.repository.StarSessionRepo;
-import io.reactivex.Flowable;
+import droiddevelopers254.droidconke.repository.FirebaseStarSessionRepo;
+import droiddevelopers254.droidconke.repository.RoomStarrSessionRepo;
 
 public class SessionDataViewModel extends ViewModel {
     private MediatorLiveData<SessionDataState> sessionDataStateMediatorLiveData;
@@ -27,7 +26,10 @@ public class SessionDataViewModel extends ViewModel {
     private MediatorLiveData<StarSessionState> starMediatorLiveData;
     private MediatorLiveData<StarSessionState> unStarMediatorLiveData;
     private MediatorLiveData<StarSessionState> starStatusMediatorLiveData;
-    private StarSessionRepo starSessionRepo;
+    private FirebaseStarSessionRepo firebaseStarSessionRepo;
+    private MediatorLiveData<SessionsModel> sessionsModelMediatorLiveData;
+    private RoomStarrSessionRepo roomStarrSessionRepo;
+    private MediatorLiveData<Integer> booleanMediatorLiveData;
 
     public SessionDataViewModel (){
         sessionDataStateMediatorLiveData= new MediatorLiveData<>();
@@ -39,18 +41,19 @@ public class SessionDataViewModel extends ViewModel {
         starMediatorLiveData=new MediatorLiveData<>();
         unStarMediatorLiveData = new MediatorLiveData<>();
         starStatusMediatorLiveData = new MediatorLiveData<>();
-        starSessionRepo= new StarSessionRepo();
+        firebaseStarSessionRepo = new FirebaseStarSessionRepo();
+        sessionsModelMediatorLiveData = new MediatorLiveData<>();
+        booleanMediatorLiveData = new MediatorLiveData<>();
+        roomStarrSessionRepo = new RoomStarrSessionRepo();
 
     }
 
-    public LiveData<SessionDataState> getSessionDetails(){
-        return  sessionDataStateMediatorLiveData;
+    public LiveData<SessionsModel> getSession(){
+        return  sessionsModelMediatorLiveData;
     }
 
-    public Flowable<SessionsEntity> getSessionDetails(String dayNumber,int sessionId){
+    public LiveData<SessionDataState> getSessionData(){return sessionDataStateMediatorLiveData;}
 
-        return sessionDataRepo.getSessionDetails(dayNumber, sessionId);
-    }
     public LiveData<SpeakersState> getSpeakerInfo(){
         return speakersStateMediatorLiveData;
     }
@@ -59,8 +62,8 @@ public class SessionDataViewModel extends ViewModel {
         return roomStateMediatorLiveData;
     }
 
-    public LiveData<StarSessionState> getStarStatus(){
-        return starStatusMediatorLiveData;
+    public LiveData<Integer> getDbStarStatus(){
+        return booleanMediatorLiveData;
     }
     public LiveData<StarSessionState> starSessionResponse(){
         return starMediatorLiveData;
@@ -68,6 +71,7 @@ public class SessionDataViewModel extends ViewModel {
     public LiveData<StarSessionState> unstarSessionResponse(){
         return unStarMediatorLiveData;
     }
+
 
     public void fetchSpeakerDetails(int speakerId){
         final LiveData<SpeakersState> speakersStateLiveData= speakersRepo.getSpeakersInfo(speakerId);
@@ -90,8 +94,8 @@ public class SessionDataViewModel extends ViewModel {
             this.roomStateMediatorLiveData.setValue(roomStateMediatorLiveData);
                 });
     }
-    public void getStarStatus(String sessionId,String userId){
-        final LiveData<StarSessionState> starSessionStateLiveData=starSessionRepo.checkStarStatus(sessionId,userId);
+    public void getStarStatus(String sessionId, String userId){
+        final LiveData<StarSessionState> starSessionStateLiveData= firebaseStarSessionRepo.checkStarStatus(sessionId,userId);
         starStatusMediatorLiveData.addSource(starSessionStateLiveData,
                 starStatusMediatorLiveData->{
             if (this.starStatusMediatorLiveData.hasActiveObservers()){
@@ -101,7 +105,7 @@ public class SessionDataViewModel extends ViewModel {
                 });
     }
     public void starSession(StarredSessionModel starredSessionModel,String userId){
-        final LiveData<StarSessionState> starSessionStateLiveData=starSessionRepo.starSession(starredSessionModel,userId);
+        final LiveData<StarSessionState> starSessionStateLiveData= firebaseStarSessionRepo.starSession(starredSessionModel,userId);
         starMediatorLiveData.addSource(starSessionStateLiveData,
                 starMediatorLiveData->{
             if (this.starMediatorLiveData.hasActiveObservers()){
@@ -111,7 +115,7 @@ public class SessionDataViewModel extends ViewModel {
                 });
     }
     public void unStarSession(String sessionId,String userId,boolean starred){
-        final LiveData<StarSessionState> starSessionStateLiveData=starSessionRepo.unStarSession(sessionId,userId,starred);
+        final LiveData<StarSessionState> starSessionStateLiveData= firebaseStarSessionRepo.unStarSession(sessionId,userId,starred);
         unStarMediatorLiveData.addSource(starSessionStateLiveData,
                 unStarMediatorLiveData->{
             if (this.unStarMediatorLiveData.hasActiveObservers()){
@@ -119,5 +123,36 @@ public class SessionDataViewModel extends ViewModel {
             }
             this.unStarMediatorLiveData.setValue(unStarMediatorLiveData);
                 });
+    }
+
+    public void getSessionDetails(String dayNumber, int sessionId){
+       final LiveData<SessionDataState>  sessionsModelLiveData = sessionDataRepo.getSessionData(dayNumber, sessionId);
+        sessionDataStateMediatorLiveData.addSource(sessionsModelLiveData,
+                sessionDataStateMediatorLiveData ->{
+            if (this.sessionDataStateMediatorLiveData.hasActiveObservers()){
+                this.sessionDataStateMediatorLiveData.removeSource(sessionsModelLiveData);
+
+            }
+            this.sessionDataStateMediatorLiveData.setValue(sessionDataStateMediatorLiveData);
+                });
+    }
+
+    public void starrSessionInDb(int sessionId, String isStarred , String dayNumber){
+        roomStarrSessionRepo.starrSession(sessionId,isStarred,dayNumber);
+    }
+
+    public void isSessionStarredInDb(int sessionId, String dayNumber){
+        final LiveData<Integer> booleanLiveData = roomStarrSessionRepo.isSessionStarred(sessionId, dayNumber);
+        booleanMediatorLiveData.addSource(booleanLiveData,
+                booleanMediatorLiveData ->{
+            if (this.booleanMediatorLiveData.hasActiveObservers()){
+                this.booleanMediatorLiveData.removeSource(booleanLiveData);
+            }
+            this.booleanMediatorLiveData.setValue(booleanMediatorLiveData);
+                });
+    }
+
+    public void unstarrSessionInDb(int sessionId, String isStarred , String dayNumber){
+        roomStarrSessionRepo.unStarrSession(sessionId,isStarred,dayNumber);
     }
 }

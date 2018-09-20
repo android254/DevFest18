@@ -1,6 +1,7 @@
 package droiddevelopers254.droidconke.views.fragments;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -12,8 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.google.firebase.database.DatabaseError;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,14 +22,15 @@ import butterknife.Unbinder;
 import droiddevelopers254.droidconke.R;
 import droiddevelopers254.droidconke.adapters.SessionTimeAdapter;
 import droiddevelopers254.droidconke.adapters.SessionsAdapter;
-import droiddevelopers254.droidconke.database.entities.SessionsEntity;
 import droiddevelopers254.droidconke.models.SessionTimeModel;
 import droiddevelopers254.droidconke.models.SessionsModel;
+import droiddevelopers254.droidconke.utils.ItemClickListener;
 import droiddevelopers254.droidconke.viewmodels.DayOneViewModel;
+import droiddevelopers254.droidconke.views.activities.SessionViewActivity;
 
 public class DayOneFragment extends Fragment {
     SessionsAdapter sessionsAdapter;
-    List<SessionsEntity> sessionsModelList = new ArrayList<>();
+    List<SessionsModel> sessionsModelList = new ArrayList<>();
     List<SessionTimeModel> sessionTimeModelList = new ArrayList<>();
     List<String> sessionIds = new ArrayList<>();
     static RecyclerView.LayoutManager mLayoutManager;
@@ -39,6 +39,7 @@ public class DayOneFragment extends Fragment {
     RecyclerView sessionsRv;
     Unbinder unbinder;
     SessionTimeAdapter sessionTimeAdapter;
+    boolean isStarred;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -47,16 +48,22 @@ public class DayOneFragment extends Fragment {
         dayOneViewModel = ViewModelProviders.of(this).get(DayOneViewModel.class);
         unbinder = ButterKnife.bind(this, view);
 
+        dayOneViewModel.getDayOneSessions();
         //observe live data emitted by view model
-        dayOneViewModel.getDayOneLiveData().observe(this,listResource -> {
-            assert listResource != null;
-            sessionsModelList=listResource.data;
-            initView();
-            sessionsAdapter.notifyDataSetChanged();
+        dayOneViewModel.getSessions().observe(this,sessionsState -> {
+            if(sessionsState.getSessionsModel() != null){
+                sessionsModelList= sessionsState.getSessionsModel();
+                initView();
+            }else {
+                handleError(sessionsState.getDatabaseError());
+            }
         });
 
-
         return view;
+    }
+
+    private void handleError(String databaseError) {
+        Toast.makeText(getActivity(),databaseError,Toast.LENGTH_SHORT).show();
     }
 
     private void initView() {
@@ -65,6 +72,23 @@ public class DayOneFragment extends Fragment {
         sessionsRv.setLayoutManager(mLayoutManager);
         sessionsRv.setItemAnimator(new DefaultItemAnimator());
         sessionsRv.setAdapter(sessionsAdapter);
+        sessionsRv.addOnItemTouchListener(new ItemClickListener(getContext(), sessionsRv, new ItemClickListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Intent intent = new Intent(getContext(), SessionViewActivity.class);
+                intent.putExtra("sessionId", sessionsModelList.get(position).getId());
+                intent.putExtra("dayNumber", "day_one");
+                intent.putExtra("starred", sessionsModelList.get(position).getIsStarred());
+                intent.putIntegerArrayListExtra("speakerId", sessionsModelList.get(position).getSpeaker_id());
+                intent.putExtra("roomId", sessionsModelList.get(position).getRoom_id());
+                startActivity(intent);
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
 
     }
 
@@ -73,4 +97,6 @@ public class DayOneFragment extends Fragment {
         super.onDestroyView();
         unbinder.unbind();
     }
+
+
 }

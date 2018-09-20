@@ -1,15 +1,20 @@
 package droiddevelopers254.droidconke.models;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+
 import java.util.ArrayList;
 
+@Entity(tableName = "sessionsList")
 public class SessionsModel {
+    @PrimaryKey
     private int id;
     private ArrayList<Integer> speaker_id;
     private int room_id;
     private String main_tag;
     private String room;
     private String speakers;
-    private String starred;
+    private String isStarred;
     private String time;
     private String title;
     private String topic;
@@ -23,6 +28,8 @@ public class SessionsModel {
     private String documentId;
     private String timestamp;
     private String day_number;
+    private String time_in_am;
+    private String am_pm_label;
 
     public SessionsModel() {
     }
@@ -59,12 +66,12 @@ public class SessionsModel {
         this.speakers = speakers;
     }
 
-    public String getStarred() {
-        return starred;
+    public String getIsStarred() {
+        return isStarred;
     }
 
-    public void setStarred(String starred) {
-        this.starred = starred;
+    public void setIsStarred(String isStarred) {
+        this.isStarred = isStarred;
     }
 
     public String getTitle() {
@@ -185,5 +192,21 @@ public class SessionsModel {
 
     public void setDay_number(String day_number) {
         this.day_number = day_number;
+    }
+
+    public String getTime_in_am() {
+        return time_in_am;
+    }
+
+    public void setTime_in_am(String time_in_am) {
+        this.time_in_am = time_in_am;
+    }
+
+    public String getAm_pm_label() {
+        return am_pm_label;
+    }
+
+    public void setAm_pm_label(String am_pm_label) {
+        this.am_pm_label = am_pm_label;
     }
 }

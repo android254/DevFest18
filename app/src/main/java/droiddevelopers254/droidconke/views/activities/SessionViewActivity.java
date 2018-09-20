@@ -2,21 +2,19 @@ package droiddevelopers254.droidconke.views.activities;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
-import android.graphics.Color;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.bottomappbar.BottomAppBar;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,15 +32,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import droiddevelopers254.droidconke.R;
 import droiddevelopers254.droidconke.adapters.SpeakersAdapter;
-import droiddevelopers254.droidconke.database.entities.SessionsEntity;
 import droiddevelopers254.droidconke.models.RoomModel;
 import droiddevelopers254.droidconke.models.SessionsModel;
 import droiddevelopers254.droidconke.models.SpeakersModel;
 import droiddevelopers254.droidconke.models.StarredSessionModel;
 import droiddevelopers254.droidconke.viewmodels.SessionDataViewModel;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
+
+import static droiddevelopers254.droidconke.utils.SharedPref.PREF_NAME;
 
 public class SessionViewActivity extends AppCompatActivity {
     int sessionId, roomId;
@@ -81,7 +78,7 @@ public class SessionViewActivity extends AppCompatActivity {
     CoordinatorLayout sessionCoordinatorLayout;
     private BottomSheetBehavior bottomSheetBehavior;
     String starStatus, dayNumber, documentId;
-    SessionsEntity sessionsModel1;
+    SessionsModel sessionsModel1;
     private DatabaseReference databaseReference;
     List<SpeakersModel> speakersList = new ArrayList<>();
     List<Integer> speakerId = new ArrayList<>();
@@ -91,6 +88,8 @@ public class SessionViewActivity extends AppCompatActivity {
     boolean starred = false;
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     private static final String TAG = SessionViewActivity.class.getSimpleName();
+    SharedPreferences sharedPreferences;
+    String isStarred;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +98,7 @@ public class SessionViewActivity extends AppCompatActivity {
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
         starredSessionModel = new StarredSessionModel();
+        sharedPreferences = getSharedPreferences(PREF_NAME,MODE_PRIVATE);
 
         //get extras
         Intent extraIntent = getIntent();
@@ -143,6 +143,14 @@ public class SessionViewActivity extends AppCompatActivity {
 
         getRoomDetails(roomId);
         //observe live data emitted by view model
+       sessionDataViewModel.getSessionData().observe(this,sessionDataState -> {
+           assert sessionDataState != null;
+           if (sessionDataState.getDatabaseError() != null){
+               handleDatabaseError(sessionDataState.getDatabaseError());
+           }else {
+               this.handleFetchSessionData(sessionDataState.getSessionsModel());
+           }
+       });
         sessionDataViewModel.getSpeakerInfo().observe(this, speakersState -> {
             assert speakersState != null;
             if (speakersState.getDatabaseError() != null) {
@@ -160,36 +168,13 @@ public class SessionViewActivity extends AppCompatActivity {
                 handleFetchRoomDetails(roomState.getRoomModel());
             }
         });
-        sessionDataViewModel.getStarStatus().observe(this, starSessionState -> {
-            assert starSessionState != null;
-            if (starSessionState.getError() != null) {
-                handleStarResponse(starSessionState.getError());
-            }
-            if (starSessionState.getStarredSessionModel() != null) {
-                StarredSessionModel starredSessionModel1 = starSessionState.getStarredSessionModel();
-                starred = starredSessionModel1.isStarred();
-                if (starred) {
-                    fab.setImageResource(R.drawable.ic_star_blue_24dp);
-                }else{
-                    fab.setImageResource(R.drawable.ic_star_border_black_24dp);
-                }
-            }
-            if (starSessionState.isStarred()) {
-                starred=starSessionState.isStarred();
-                fab.setImageResource(R.drawable.ic_star_border_black_24dp);
-            }
-
-        });
         sessionDataViewModel.starSessionResponse().observe(this, starSessionState -> {
             assert starSessionState != null;
             if (starSessionState.getError() != null) {
                 handleStarResponse(starSessionState.getError());
             }
             if (starSessionState.isStarred()){
-                starred=true;
-                Toast.makeText(getApplicationContext(),getString(R.string.starred_desc),Toast.LENGTH_SHORT).show();
 
-                Log.d("star_value", String.valueOf(starred));
             }
         });
         sessionDataViewModel.unstarSessionResponse().observe(this, starSessionState -> {
@@ -198,10 +183,19 @@ public class SessionViewActivity extends AppCompatActivity {
                 handleStarResponse(starSessionState.getError());
             }
             if (!starSessionState.isStarred()){
-                starred=false;
-                Toast.makeText(getApplicationContext(),getString(R.string.unstarred_desc),Toast.LENGTH_SHORT).show();
-                Log.d(TAG, String.valueOf(starred));
+
             }
+        });
+
+        sessionDataViewModel.getDbStarStatus().observe(this, s -> {
+            if (s >0){
+                isStarred = "1";
+                fab.setImageResource(R.drawable.ic_star_blue_24dp);
+               }else {
+                isStarred = "0";
+                fab.setImageResource(R.drawable.ic_star_border_black_24dp);
+               }
+
         });
         bottomAppBar.replaceMenu(R.menu.menu_bottom_appbar);
 
@@ -226,29 +220,36 @@ public class SessionViewActivity extends AppCompatActivity {
             }
             return false;
         });
-
         //star a session
         fab.setOnClickListener(view -> {
-            if (starred) {
-                Log.d(TAG, String.valueOf(starred));
+            if (isStarred.equals("0")) {
+                isStarred = "1";
+                sessionDataViewModel.starrSessionInDb(sessionId,isStarred,dayNumber);
+                Log.d("test",sessionId+isStarred+dayNumber);
 
-                fab.setImageResource(R.drawable.ic_star_border_black_24dp);
-                //unstar session in starred_sessions collection
-                sessionDataViewModel.unStarSession(String.valueOf(sessionsModel1.getDocumentId()),FirebaseAuth.getInstance().getCurrentUser().getUid(),false);
-            }else {
-                Log.d(TAG, String.valueOf(starred));
-                //star a session
+                Toast.makeText(getApplicationContext(),getString(R.string.starred_desc),Toast.LENGTH_SHORT).show();
+
                 fab.setImageResource(R.drawable.ic_star_blue_24dp);
-
                 starredSessionModel.setDay(dayNumber);
                 starredSessionModel.setSession_id(String.valueOf(sessionsModel1.getId()));
                 starredSessionModel.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
                 starredSessionModel.setStarred(true);
                 starredSessionModel.setDocumentId(sessionsModel1.getDocumentId());
-
                 //star session in starred_sessions collection
                 //this will aid in tracking every starred session and then send a push notification
                 sessionDataViewModel.starSession(starredSessionModel,FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+            }else if (isStarred.equals("1")){
+                isStarred = "0";
+                Toast.makeText(getApplicationContext(),getString(R.string.unstarred_desc),Toast.LENGTH_SHORT).show();
+
+                //star a session
+                fab.setImageResource(R.drawable.ic_star_border_black_24dp);
+                sessionDataViewModel.unstarrSessionInDb(sessionId,isStarred,dayNumber);
+                Log.d("test",sessionId+isStarred+dayNumber);
+                //unstar session in starred_sessions collection
+                sessionDataViewModel.unStarSession(String.valueOf(sessionsModel1.getDocumentId()),FirebaseAuth.getInstance().getCurrentUser().getUid(),false);
+
             }
         });
         //collapse bottom bar
@@ -258,6 +259,10 @@ public class SessionViewActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void getSessionData(String dayNumber, int sessionId) {
+        sessionDataViewModel.getSessionDetails(dayNumber, sessionId);
     }
 
     private void handleStarUserSession(int starMessage) {
@@ -299,34 +304,24 @@ public class SessionViewActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(speakersAdapter);
     }
-
-    private void handleFetchSessionData(SessionsEntity sessionsEntity) {
-        if (sessionsEntity != null) {
-            sessionsModel1 = sessionsEntity;
+    private void handleFetchSessionData(SessionsModel sessionsModel) {
+        if (sessionsModel != null) {
+            sessionsModel1 = sessionsModel;
             //check star status
-            sessionDataViewModel.getStarStatus(sessionsModel1.getDocumentId(), FirebaseAuth.getInstance().getCurrentUser().getUid());
+            sessionDataViewModel.isSessionStarredInDb(sessionId,dayNumber);
 
             //set the data on the view
-            txtSessionTime.setText(sessionsEntity.getTime());
-            txtSessionRoom.setText(sessionsEntity.getRoom());
-            txtSessionDesc.setText(sessionsEntity.getDescription());
-            txtSessionCategory.setText(sessionsEntity.getTopic());
-            sessionViewTitleText.setText(sessionsEntity.getTitle());
+            txtSessionTime.setText(sessionsModel.getTime());
+            txtSessionRoom.setText(sessionsModel.getRoom());
+            txtSessionDesc.setText(sessionsModel.getDescription());
+            txtSessionCategory.setText(sessionsModel.getTopic());
+            sessionViewTitleText.setText(sessionsModel.getTitle());
+
 
         }
     }
-
-
     private void handleDatabaseError(String databaseError) {
         Toast.makeText(getApplicationContext(),databaseError,Toast.LENGTH_SHORT).show();
-    }
-
-    private void getSessionData(String dayNumber, int sessionId) {
-        compositeDisposable.add(sessionDataViewModel.getSessionDetails(dayNumber, sessionId)
-        .subscribeOn(Schedulers.newThread())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this::handleFetchSessionData,
-                throwable ->Log.e(TAG,"Unable to fetch session details",throwable) ));
     }
 
 }
