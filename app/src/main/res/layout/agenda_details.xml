@@ -32,14 +32,14 @@
                 style="@style/CollapsibleCardTitle"
                 android:id="@+id/agendaTitleText"
                 android:text="@string/agenda_title"
-                android:textSize="19sp"
+                android:textSize="@dimen/text_size_small"
                 android:layout_height="wrap_content" />
             <TextView
                 android:layout_width="wrap_content"
                 android:id="@+id/agendaTimelineText"
                 android:layout_marginTop="6dp"
                 android:text="@string/agenda_time"
-                android:textSize="18sp"
+                android:textSize="@dimen/text_size_normal"
                 android:layout_height="wrap_content" />
         </LinearLayout>
     </RelativeLayout>
