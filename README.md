@@ -1,7 +1,7 @@
-# droidconKE Android App
+# DevFestNairobi Android App
 
 
-Android app for the first ever Android Developer conference-droidcon in Nairobi 2018
+Android app for DevFest Nairobi  Nairobi 2018
 
 This project is the Android app for the conference. The app supports devices
 running Android 4.4+, and is optimized for phones and tablets of all shapes
