@@ -1,4 +1,4 @@
-# DevFestNairobi Android App
+# DevFest Nairobi Android App
 
 
 Android app for DevFest Nairobi  Nairobi 2018
@@ -9,16 +9,16 @@ and sizes.
 
 <h2>Source</h2>
 
-The source code in this repository reflects the app as of droidconKE 2018.
+The source code in this repository reflects the app as of DevFest Nairobi 2018.
 
 <h2>Features</h2>
 
 With the app, you can:
 
-- View the conference agendaModel and edit your personal schedule
+- View the conference schedule
 - Sync your schedule between all of your devices
-- View detailed session, code lab, office hours, and speaker information,
+- View detailed session, code labs and speaker information,
   including speaker bios, photos, and Google+ profiles
-- Guide yourself using the vector-based conference map
-- Get a reminder a few minutes before sessionsModel in your schedule are due to
+- Guide yourself using the venue map
+- Get a reminder a few minutes before sessions in your schedule are due to
   start
