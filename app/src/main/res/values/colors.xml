@@ -23,4 +23,5 @@
     <color name="colorDroidBug">#6ADEA3</color>
     <color name="colorTextViewDark">#606674</color>
     <color name="colorTextViewLight">#adb3c0</color>
+    <color name="colorWhite90">#3c54fe</color>
 </resources>

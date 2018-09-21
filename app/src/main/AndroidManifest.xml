@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="droiddevelopers254.droidconke">
+    package="droiddevelopers254.devfestnairobi">
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -20,7 +20,8 @@
         android:theme="@style/AppTheme.NoActionBar">
         <activity
             android:name=".HomeActivity"
-            android:label="@string/app_name" />
+            android:label="@string/app_name" >
+        </activity>
         <activity
             android:name=".views.activities.SessionViewActivity"
             android:label="@string/title_activity_session_view"
@@ -40,18 +41,9 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".views.activities.WelcomeActivity"
-            android:label="@string/title_activity_welcome"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".views.activities.AuthenticateUserActivity"
+            android:name="droiddevelopers254.devfestnairobi.views.activities.AuthenticateUserActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -64,7 +56,7 @@
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
 
