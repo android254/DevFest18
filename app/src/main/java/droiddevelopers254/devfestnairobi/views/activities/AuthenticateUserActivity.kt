@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
@@ -23,6 +24,7 @@ import droiddevelopers254.devfestnairobi.HomeActivity
 import droiddevelopers254.devfestnairobi.R
 import droiddevelopers254.devfestnairobi.viewmodels.AuthenticateUserViewModel
 import kotlinx.android.synthetic.main.content_authenticate_user.*
+import org.jetbrains.anko.toast
 
 class AuthenticateUserActivity : AppCompatActivity() {
     lateinit var auth: FirebaseAuth
@@ -60,76 +62,43 @@ class AuthenticateUserActivity : AppCompatActivity() {
             // not signed in
             showUI()
         }
-        //observe livedata emitted by view model
-        authenticateUserViewModel.authenticateResponse.observe(this, Observer{
-            if (it != null) {
-                if (it.isUserExists) {
-                    navigateToHome()
-                } else {
-                    if (it.error != null) {
-                        handleError(it.error)
-                    }
-                }
-            }
-        })
-
     }
-
-    private fun handleError(error: String?) {
-        Toast.makeText(applicationContext, error, Toast.LENGTH_SHORT).show()
-    }
-
     private fun showUI() {
         googleSignInBtn.setOnClickListener {
-            pDialog!!.titleText = "Signing in"
-            showDialog()
+            pDialog?.titleText = "Signing in"
+           // showDialog()
             signInUser()
         }
     }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         super.onActivityResult(requestCode, resultCode, data)
         // RC_SIGN_IN is the request code you passed into startActivityForResult(...) when starting the sign in flow.
         if (requestCode == RC_SIGN_IN) {
-            hideDialog()
             val response = IdpResponse.fromResultIntent(data)
-
             // Successfully signed in
             if (resultCode == Activity.RESULT_OK) {
-                //save the user now to db
-               val  firebaseUser = auth.currentUser
-                if (firebaseUser != null) {
-                    authenticateUserViewModel.authenticateUser(firebaseUser)
-
-                } else {
-                    Toast.makeText(applicationContext, "User is null", Toast.LENGTH_LONG).show()
-                }
-
+               navigateToHome()
             } else {
                 // Sign in failed
                 if (response == null) {
-                    // UserModel pressed back button
-                    Toast.makeText(applicationContext, "You pressed back button before log in", Toast.LENGTH_SHORT).show()
+                    // User pressed back button
+                    toast("You pressed back button before log in")
                     return
                 }
-
-                if (response.errorCode == ErrorCodes.NO_NETWORK) {
-                    Toast.makeText(applicationContext, "Network Error", Toast.LENGTH_SHORT).show()
+                if (response.error?.errorCode == ErrorCodes.NO_NETWORK) {
+                    toast("Network Error")
                     return
                 }
-
-                if (response.errorCode == ErrorCodes.UNKNOWN_ERROR) {
-                    Toast.makeText(applicationContext, "Please try again", Toast.LENGTH_SHORT).show()
-
+                if (response.error?.errorCode == ErrorCodes.UNKNOWN_ERROR) {
+                    toast("Please try again")
                 }
+                toast("An error occurred")
             }
 
         }
     }
-
     //function to log in
     private fun signInUser() {
-
         startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
@@ -145,18 +114,16 @@ class AuthenticateUserActivity : AppCompatActivity() {
         finish()
 
     }
-
     private fun showDialog() {
         if (!pDialog!!.isShowing)
-            pDialog!!.show()
+            pDialog?.show()
     }
 
     private fun hideDialog() {
         if (pDialog!!.isShowing)
-            pDialog!!.dismiss()
+            pDialog?.dismiss()
 
     }
-
     companion object {
         private const val RC_SIGN_IN = 123
     }

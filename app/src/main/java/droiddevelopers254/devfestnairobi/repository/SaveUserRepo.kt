@@ -2,24 +2,21 @@ package droiddevelopers254.devfestnairobi.repository
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.firestore.FirebaseFirestore
-
 import droiddevelopers254.devfestnairobi.datastates.UpdateTokenState
+import droiddevelopers254.devfestnairobi.models.UserModel
 
-class UpdateTokenRepo {
+class SaveUserRepo {
 
-    fun updateToken(userId: String, refreshToken: String): LiveData<UpdateTokenState> {
+    fun saveUser(user : UserModel): LiveData<UpdateTokenState> {
         val updateTokenStateMutableLiveData = MutableLiveData<UpdateTokenState>()
         val firebaseFirestore = FirebaseFirestore.getInstance()
-        firebaseFirestore.collection("users").document(userId)
-                .update("refresh_token", refreshToken)
+        firebaseFirestore.collection("users").document(user.user_id)
+                .set(user)
                 .addOnSuccessListener {
-                    updateTokenStateMutableLiveData.value =UpdateTokenState(true,null) }
+                    updateTokenStateMutableLiveData.setValue(UpdateTokenState(true,null)) }
                 .addOnFailureListener {
-                    updateTokenStateMutableLiveData.value =UpdateTokenState(false,it.message) }
+                    updateTokenStateMutableLiveData.setValue(UpdateTokenState(false,it.message)) }
         return updateTokenStateMutableLiveData
     }
 }

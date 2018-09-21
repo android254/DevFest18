@@ -20,9 +20,17 @@ class AgendaAdapter(private val agendaModelList: List<AgendaModel>, private val 
         fun bindAgendas(agendaModel: AgendaModel){
             with(agendaModel){
                 //TODO add logic for changing agenda icon
-                agendaTitleText.text = title
-                agendaTimelineText.text = time
-                agendaLinear.setBackgroundColor(Color.parseColor(background_color))
+                itemView.agendaTitleText.text = title
+                itemView.agendaTimelineText.text = time
+                itemView.agendaLinear.setBackgroundColor(Color.parseColor(background_color))
+
+                when(event_type){
+                    "1" -> itemView.agendaImg.setImageResource(R.drawable.ic_star_black_24dp)
+                    "2" -> itemView.agendaImg.setImageResource(R.drawable.ic_code_black_24dp)
+                    "3" -> itemView.agendaImg.setImageResource(R.drawable.ic_restaurant_black_24dp)
+                    "4" -> itemView.agendaImg.setImageResource(R.drawable.ic_music_note_black_24dp)
+                    "5" -> itemView.agendaImg.setImageResource(R.drawable.ic_supervisor_account_black_24dp)
+                }
             }
         }
 

@@ -25,8 +25,6 @@ import java.util.*
 class DayOneFragment : Fragment() {
 
     internal var sessionsModelList: List<SessionsModel> = ArrayList()
-    internal var sessionTimeModelList: List<SessionTimeModel> = ArrayList()
-    internal var sessionIds: List<String> = ArrayList()
     lateinit var dayOneViewModel: DayOneViewModel
     internal var isStarred: Boolean = false
 
@@ -34,11 +32,15 @@ class DayOneFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_day_one, container, false)
 
         dayOneViewModel = ViewModelProviders.of(this).get(DayOneViewModel::class.java)
+        if (sessionsModelList.isEmpty()){
+            view.swipeRefresh.isRefreshing = true
+        }
         val sessionsRv = view.sessionsRv
 
         dayOneViewModel.getDayOneSessions()
         //observe live data emitted by view model
         dayOneViewModel.sessions.observe(this, Observer{
+            view.swipeRefresh.isRefreshing = false
             if (it?.sessionsModelList != null) {
                 sessionsModelList = it.sessionsModelList
                 initView(sessionsRv)

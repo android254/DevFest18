@@ -20,7 +20,8 @@
         android:theme="@style/AppTheme.NoActionBar">
         <activity
             android:name=".HomeActivity"
-            android:label="@string/app_name" />
+            android:label="@string/app_name" >
+        </activity>
         <activity
             android:name=".views.activities.SessionViewActivity"
             android:label="@string/title_activity_session_view"
@@ -43,11 +44,6 @@
             android:name="droiddevelopers254.devfestnairobi.views.activities.AuthenticateUserActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

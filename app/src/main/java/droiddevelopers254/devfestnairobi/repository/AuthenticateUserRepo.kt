@@ -17,10 +17,7 @@ class AuthenticateUserRepo {
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val documentSnapshot = task.result
-                        if (documentSnapshot.exists()) {
-                            //user already exists do nothing
-                            userStateMutableLiveData.value = AuthenticateUserState(true)
-                        } else {
+                        if (!documentSnapshot.exists()) {
                             val user = UserModel(
                                      firebaseUser.uid,
                                     null,
@@ -28,19 +25,17 @@ class AuthenticateUserRepo {
                                     firebaseUser.displayName.toString(),
                                     firebaseUser.photoUrl.toString()
                             )
-                            userStateMutableLiveData.value = AuthenticateUserState(false,null,user)
-
                             //save user in firestore
                             firebaseFirestore.collection("users").document(user.user_id)
                                     .set(user)
                                     .addOnSuccessListener {
-                                        userStateMutableLiveData.setValue(AuthenticateUserState(true)) }
+                                        userStateMutableLiveData.setValue(AuthenticateUserState(true,null,null)) }
                                     .addOnFailureListener {
                                         userStateMutableLiveData.setValue(AuthenticateUserState(false,it.message)) }
-
+                        }else{
+                            userStateMutableLiveData.value = AuthenticateUserState(false,null,documentSnapshot.toObject(UserModel::class.java))
                         }
                     }
-
                 }
         return userStateMutableLiveData
     }

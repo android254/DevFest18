@@ -7,9 +7,10 @@ import android.arch.lifecycle.ViewModel
 import droiddevelopers254.devfestnairobi.datastates.FiltersState
 import droiddevelopers254.devfestnairobi.datastates.UpdateTokenState
 import droiddevelopers254.devfestnairobi.models.FiltersModel
+import droiddevelopers254.devfestnairobi.models.UserModel
 import droiddevelopers254.devfestnairobi.repository.TopicFiltersRepo
 import droiddevelopers254.devfestnairobi.repository.TypeFiltersRepo
-import droiddevelopers254.devfestnairobi.repository.UpdateTokenRepo
+import droiddevelopers254.devfestnairobi.repository.SaveUserRepo
 
 class HomeViewModel : ViewModel() {
     private val filtersList: LiveData<List<FiltersModel>>? = null
@@ -18,7 +19,7 @@ class HomeViewModel : ViewModel() {
     private val stateMediatorLiveData: MediatorLiveData<FiltersState> = MediatorLiveData()
     private val updateTokenStateMediatorLiveData: MediatorLiveData<UpdateTokenState> = MediatorLiveData()
     private val topicFiltersRepo: TopicFiltersRepo = TopicFiltersRepo()
-    private val updateTokenRepo: UpdateTokenRepo = UpdateTokenRepo()
+    private val saveUserRepo: SaveUserRepo = SaveUserRepo()
 
     val typeFiltersResponse: LiveData<FiltersState>
         get() = filtersStateMediatorLiveData
@@ -49,8 +50,8 @@ class HomeViewModel : ViewModel() {
         }
 
     }
-    fun updateToken(userId: String, refreshToken: String) {
-        val updateTokenStateLiveData = updateTokenRepo.updateToken(userId, refreshToken)
+    fun saveUser(user : UserModel) {
+        val updateTokenStateLiveData = saveUserRepo.saveUser(user)
         updateTokenStateMediatorLiveData.addSource(updateTokenStateLiveData
         ) { updateTokenStateMediatorLiveData ->
             if (this.updateTokenStateMediatorLiveData.hasActiveObservers()) {

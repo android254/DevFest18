@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.CoordinatorLayout
-import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.GridLayoutManager
@@ -17,17 +16,16 @@ import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import droiddevelopers254.devfestnairobi.adapters.ChipViewAdapter
 import droiddevelopers254.devfestnairobi.models.FiltersModel
+import droiddevelopers254.devfestnairobi.models.UserModel
 import droiddevelopers254.devfestnairobi.ui.BottomNavigationBehaviour
 import droiddevelopers254.devfestnairobi.utils.SharedPref.FIREBASE_TOKEN
 import droiddevelopers254.devfestnairobi.utils.SharedPref.PREF_NAME
@@ -64,11 +62,20 @@ class HomeActivity : AppCompatActivity() {
 
         //check whether refresh token is sent to db
         val tokenSent = sharedPreferences.getInt(TOKEN_SENT, 0)
+        val refreshToken = sharedPreferences.getString(FIREBASE_TOKEN, null)
         if (tokenSent == 0) {
-            val refreshToken = sharedPreferences.getString(FIREBASE_TOKEN, null)
             val firebaseUser = FirebaseAuth.getInstance().currentUser
-            //update in firestore
-            homeViewModel.updateToken(firebaseUser?.uid.toString(), refreshToken!!)
+            //save current user in firestore
+            if (firebaseUser != null){
+                val user = UserModel(
+                        firebaseUser.uid,
+                        refreshToken,
+                        firebaseUser.email.toString(),
+                        firebaseUser.displayName.toString(),
+                        firebaseUser.photoUrl.toString()
+                )
+                homeViewModel.saveUser(user)
+            }
         }
         //get filters from firebase
         getTopicFilters()
