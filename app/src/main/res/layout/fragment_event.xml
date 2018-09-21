@@ -22,9 +22,10 @@
         <TextView
             android:layout_width="match_parent"
             style="@style/CollapsibleCardTitle"
-            android:text="WIFI"
+            android:text="@string/wifi_label"
             android:textSize="17sp"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textAllCaps="true"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:orientation="horizontal"
@@ -40,7 +41,7 @@
                     android:layout_width="wrap_content"
                     android:id="@+id/wifiLabelText"
                     style="@style/CollapsibleCardTitle"
-                    android:text="Wifi network:"
+                    android:text="@string/wifi_network_label"
                     android:textSize="16sp"
                     android:layout_height="wrap_content" />
                 <TextView
@@ -48,7 +49,7 @@
                     android:layout_marginTop="@dimen/fab_margin"
                     android:id="@+id/wifiPaswordText"
                     style="@style/CollapsibleCardTitle"
-                    android:text="Password:"
+                    android:text="@string/password_label"
                     android:textSize="16sp"
                     android:layout_height="wrap_content" />
 
@@ -83,7 +84,7 @@
             style="@style/CollapsibleCardTitle"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="@dimen/fab_margin"
-            android:text="Event types"
+            android:text="@string/event_types_label"
             android:textAllCaps="true"
             android:textSize="17sp"
             android:layout_height="wrap_content" />
