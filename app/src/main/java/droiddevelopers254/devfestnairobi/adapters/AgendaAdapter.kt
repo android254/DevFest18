@@ -12,11 +12,6 @@ import kotlinx.android.synthetic.main.agenda_details.view.*
 
 class AgendaAdapter(private val agendaModelList: List<AgendaModel>, private val context: Context) : RecyclerView.Adapter<AgendaAdapter.MyViewHolder>() {
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val agendaTitleText = itemView.agendaTitleText
-        private val agendaTimelineText = itemView.agendaTimelineText
-        private val agendaImg =itemView.agendaImg
-        private val agendaLinear = itemView.agendaLinear
-
         fun bindAgendas(agendaModel: AgendaModel){
             with(agendaModel){
                 //TODO add logic for changing agenda icon

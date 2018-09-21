@@ -12,14 +12,11 @@ import kotlinx.android.synthetic.main.chip_details.view.*
 class ChipViewAdapter(private val filtersModelList: List<FiltersModel>, private val context: Context) : RecyclerView.Adapter<ChipViewAdapter.MyViewHolder>() {
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        internal var categoryChip = itemView.categoryChip
-
         fun bindFilters(filtersModel: FiltersModel){
             with(filtersModel){
-                categoryChip.chipText = name
+                itemView.categoryChip.chipText = name
             }
         }
-
 
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {

@@ -16,28 +16,24 @@ import kotlinx.android.synthetic.main.speaker_details.view.*
 class SpeakersAdapter(private val speakersList: List<SpeakersModel>, private val context: Context) : RecyclerView.Adapter<SpeakersAdapter.MyViewHolder>() {
 
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        internal var speakerNameText = itemView.speakerNameText
-        internal var speakerCompanyText = itemView.speakerCompanyText
-        internal var speakerImg = itemView.speakerImg
-
        fun bindSpeakerDetails(speakersModel: SpeakersModel){
            with(speakersModel){
                Glide.with(itemView.context).load(photoUrl)
                        .thumbnail(Glide.with(itemView.context).load(photoUrl))
                        .apply(RequestOptions()
                                .centerCrop()
-                               .diskCacheStrategy(DiskCacheStrategy.ALL))
+                               .diskCacheStrategy(DiskCacheStrategy.ALL)
+                               .placeholder(R.drawable.profile))
                        .transition(DrawableTransitionOptions()
                                .crossFade())
-                       .into(speakerImg)
+                       .into(itemView.speakerImg)
 
-               speakerNameText.text = name
-               speakerCompanyText.text = company
+               itemView.speakerNameText.text = name
+               itemView.speakerCompanyText.text = company
 
            }
        }
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SpeakersAdapter.MyViewHolder {
         val itemView = LayoutInflater.from(parent.context)
                 .inflate(R.layout.speaker_details, parent, false)

@@ -28,12 +28,11 @@ class AboutFragment : Fragment() {
             aboutDetailsIntent.putExtra("aboutType", "organizers")
             startActivity(aboutDetailsIntent)
         }
-        view.sponsorsText.setOnClickListener {
-            val aboutDetailsIntent = Intent(activity, AboutDetailsActivity::class.java)
-            aboutDetailsIntent.putExtra("aboutType", "sponsors")
-            startActivity(aboutDetailsIntent)
-        }
-
+//        view.sponsorsText.setOnClickListener {
+//            val aboutDetailsIntent = Intent(activity, AboutDetailsActivity::class.java)
+//            aboutDetailsIntent.putExtra("aboutType", "sponsors")
+//            startActivity(aboutDetailsIntent)
+//        }
         return view
     }
 

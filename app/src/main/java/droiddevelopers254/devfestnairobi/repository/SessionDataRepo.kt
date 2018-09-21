@@ -14,10 +14,10 @@ class SessionDataRepo {
     internal var databaseReference: DatabaseReference? = null
     private val sessionsDao: SessionsDao = AppDatabase.getDatabase(DroidCoin.context)!!.sessionsDao()
 
-    fun getSessionData(dayNumber: String, sessionId: Int): LiveData<SessionDataState> {
+    fun getSessionData(sessionId: Int): LiveData<SessionDataState> {
         val sessionsModelMutableLiveData = MutableLiveData<SessionDataState>()
         val firebaseFirestore = FirebaseFirestore.getInstance()
-        firebaseFirestore.collection(dayNumber)
+        firebaseFirestore.collection("schedule")
                 .whereEqualTo("id", sessionId)
                 .get()
                 .addOnCompleteListener {

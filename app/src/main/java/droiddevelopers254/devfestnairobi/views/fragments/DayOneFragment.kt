@@ -35,6 +35,9 @@ class DayOneFragment : Fragment() {
         if (sessionsModelList.isEmpty()){
             view.swipeRefresh.isRefreshing = true
         }
+        view.swipeRefresh.setOnRefreshListener {
+            dayOneViewModel.getDayOneSessions()
+        }
         val sessionsRv = view.sessionsRv
 
         dayOneViewModel.getDayOneSessions()
@@ -51,7 +54,6 @@ class DayOneFragment : Fragment() {
 
         return view
     }
-
     private fun handleError(databaseError: String?) {
         Toast.makeText(activity, databaseError, Toast.LENGTH_SHORT).show()
     }
@@ -67,12 +69,11 @@ class DayOneFragment : Fragment() {
                 val intent = Intent(context, SessionViewActivity::class.java)
                 intent.putExtra("sessionId", sessionsModelList[position].id)
                 intent.putExtra("dayNumber", "day_one")
-                intent.putExtra("starred", sessionsModelList[position].starred)
+                intent.putExtra("sessionName", sessionsModelList[position].title)
                 intent.putIntegerArrayListExtra("speakerId", sessionsModelList[position].speaker_id)
                 intent.putExtra("roomId", sessionsModelList[position].room_id)
                 startActivity(intent)
             }
-
             override fun onLongClick(view: View, position: Int) {
 
             }

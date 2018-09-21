@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#863B96</color>
-    <color name="colorPrimaryDark">#660a79</color>
-    <color name="colorAccent">#863B96</color>
+    <color name="colorPrimary">#40C4FF</color>
+    <color name="colorPrimaryDark">#2ba9e1</color>
+    <color name="colorAccent">#40C4FF</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorBlack">#1B1E1E</color>
     <color name="colorFavourite">#3F51B5</color>
@@ -23,5 +23,5 @@
     <color name="colorDroidBug">#6ADEA3</color>
     <color name="colorTextViewDark">#606674</color>
     <color name="colorTextViewLight">#adb3c0</color>
-    <color name="colorWhite90">#3c54fe</color>
+    <color name="colorWhite90">#2ba9e1</color>
 </resources>

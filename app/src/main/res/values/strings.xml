@@ -37,9 +37,8 @@
     <string name="title_activity_welcome">WelcomeActivity</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="welcome_title">
-       The biggest Google\n
-        tech conference \n
-        in Nairobi conference
+      #devfestNairobi \n
+       #devfest18 \n
     </string>
     <string name="welcome_dates">
         July 26- 27,\n
@@ -93,11 +92,11 @@
     <string name="title_activity_authenticate_user">AuthenticateUser</string>
     <string name="action_share">Share</string>
     <string name="action_map">Map</string>
-    <string name="droidconke_site">https://droidcon.co.ke</string>
-    <string name="droidcoke_hashtag">#droidconKE</string>
-    <string name="faqs_link">https://droidcon.co.ke</string>
-    <string name="terms_of_service_link">https://droidcon.co.ke</string>
-    <string name="privacy_policy_link">https://droidcon.co.ke</string>
+    <string name="devfestnairobi_site">https://devfestnairobi.gdgkenya.org</string>
+    <string name="devfestnairobi_hashtag">#devfestNairobi</string>
+    <string name="faqs_link">https://devfestnairobi.gdgkenya.org</string>
+    <string name="terms_of_service_link">https://devfestnairobi.gdgkenya.org</string>
+    <string name="privacy_policy_link">https://devfestnairobi.gdgkenya.org</string>
     <string name="about_licenses">Open Source Licenses</string>
     <string name="ok">OK</string>
     <string name="customize_schedule">Customize your schedule</string>
@@ -131,7 +130,7 @@
     <string name="usiu_africa">USIU Africa</string>
     <string name="room_details">Room Details</string>
     <string name="room_description">\"Surfaces and edges of the material provide visual cues that are grounded in reality. The \"         \"use of familiar tactile attributes helps users quickly understand affordances. Yet the \"         \"flexibility of the material creates new affordances that supercede those in the physical \"         \"world, without breaking the rules of physics.\\n\"</string>
-    <string name="welcome_date">September 22nd \n 2018</string>
+    <string name="welcome_date">22 Sep 2018</string>
     <string name="welcome_year">2018</string>
     <string name="welcome_location">USIU-Africa Nairobi</string>
     <string name="speakers">Speakers</string>
@@ -155,4 +154,5 @@
     <string name="password_label">Password:</string>
     <string name="event_types_label">Event types</string>
     <string name="about_devfestnairobi">About DevFest Nairobi</string>
+    <string name="event_name">Sessions</string>
 </resources>

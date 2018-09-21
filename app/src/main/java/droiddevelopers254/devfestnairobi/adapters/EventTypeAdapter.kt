@@ -12,13 +12,11 @@ import kotlinx.android.synthetic.main.event_type_details.view.*
 class EventTypeAdapter(private val eventTypesList: List<EventTypeModel>, private val context: Context) : RecyclerView.Adapter<EventTypeAdapter.MyViewHolder>() {
 
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val eventDescriptionText = itemView.eventDescriptionText
-        private val eventImg = itemView.eventImg
 
         fun bindEvents(eventTypeModel: EventTypeModel){
             with(eventTypeModel){
-                eventImg.setImageResource(R.drawable.event_image)
-                eventDescriptionText.text = description
+                itemView.eventNameText.text = name
+                itemView.eventDescriptionText.text = description
             }
         }
     }

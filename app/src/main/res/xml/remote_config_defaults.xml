@@ -10,7 +10,7 @@
     </entry>
     <entry>
         <key>biking</key>
-        <value>Complementary bike parking will be available at USIU. Security officers will provide secure valet parking for your bicycle from 7 am until the event ends</value>
+        <value>Complementary bike parking will be available at USIU. Security officers will provide secure valet parking for your bicycle from 8 am until the event ends</value>
     </entry>
     <entry>
         <key>ride_sharing</key>
@@ -34,6 +34,6 @@
     </entry>
     <entry>
         <key>devfestnairobi_hashtag</key>
-        <value>#devfestNairobi </value>
+        <value>#devfestNairobi</value>
     </entry>
 </defaultsMap>

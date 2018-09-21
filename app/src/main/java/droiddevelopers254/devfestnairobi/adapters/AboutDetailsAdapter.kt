@@ -16,10 +16,6 @@ import kotlinx.android.synthetic.main.about_details.view.*
 class AboutDetailsAdapter(private val aboutDetailsModelList: List<AboutDetailsModel>, private val context: Context, private val itemClick: (AboutDetailsModel) -> Unit) : RecyclerView.Adapter<AboutDetailsAdapter.MyViewHolder>() {
 
      class MyViewHolder(itemView: View, private val itemClick: (AboutDetailsModel) -> Unit) : RecyclerView.ViewHolder(itemView) {
-         private val aboutDetailsDescText = itemView.aboutDetailsDescText
-         private val aboutDetailsTitleText = itemView.aboutDetailsTitleText
-         private val aboutDetailsImg = itemView.aboutDetailsImg
-
          fun bindAboutDetails(aboutDetailsModel: AboutDetailsModel){
              with(aboutDetailsModel){
                  Glide.with(itemView.context).load(logoUrl)
@@ -29,10 +25,10 @@ class AboutDetailsAdapter(private val aboutDetailsModelList: List<AboutDetailsMo
                                  .diskCacheStrategy(DiskCacheStrategy.ALL))
                          .transition(DrawableTransitionOptions()
                                  .crossFade())
-                         .into(aboutDetailsImg)
+                         .into(itemView.aboutDetailsImg)
 
-                 aboutDetailsDescText.text = bio
-                 aboutDetailsTitleText.text = name
+                 itemView.aboutDetailsDescText.text = bio
+                 itemView.aboutDetailsTitleText.text = name
 
                  itemView.setOnClickListener {
                      itemClick(this)

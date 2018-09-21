@@ -110,8 +110,8 @@ class SessionDataViewModel : ViewModel() {
         }
     }
 
-    fun getSessionDetails(dayNumber: String, sessionId: Int) {
-        val sessionsModelLiveData = sessionDataRepo.getSessionData(dayNumber, sessionId)
+    fun getSessionDetails(sessionId: Int) {
+        val sessionsModelLiveData = sessionDataRepo.getSessionData(sessionId)
         sessionDataStateMediatorLiveData.addSource(sessionsModelLiveData
         ) { sessionDataStateMediatorLiveData ->
             if (this.sessionDataStateMediatorLiveData.hasActiveObservers()) {

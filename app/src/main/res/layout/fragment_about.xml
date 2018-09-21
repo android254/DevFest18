@@ -29,15 +29,15 @@
             android:text="@string/organizers"
             android:textColor="@color/colorFavourite"
             android:layout_height="wrap_content" />
-        <TextView
-            android:layout_width="match_parent"
-            android:id="@+id/sponsorsText"
-            style="@style/CollapsibleCardTitle"
-            android:layout_marginTop="@dimen/fab_margin"
-            android:layout_marginBottom="@dimen/fab_margin"
-            android:text="@string/sponsors"
-            android:textColor="@color/colorFavourite"
-            android:layout_height="wrap_content" />
+        <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:id="@+id/sponsorsText"-->
+            <!--style="@style/CollapsibleCardTitle"-->
+            <!--android:layout_marginTop="@dimen/fab_margin"-->
+            <!--android:layout_marginBottom="@dimen/fab_margin"-->
+            <!--android:text="@string/sponsors"-->
+            <!--android:textColor="@color/colorFavourite"-->
+            <!--android:layout_height="wrap_content" />-->
         <!--<TextView-->
             <!--android:layout_width="match_parent"-->
             <!--android:id="@+id/openLicensesText"-->

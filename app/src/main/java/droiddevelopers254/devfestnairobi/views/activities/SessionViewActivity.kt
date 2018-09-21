@@ -11,10 +11,8 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.Toolbar
-import android.util.Log
 import android.view.View
 import android.widget.Toast
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import droiddevelopers254.devfestnairobi.R
@@ -22,7 +20,6 @@ import droiddevelopers254.devfestnairobi.adapters.SpeakersAdapter
 import droiddevelopers254.devfestnairobi.models.RoomModel
 import droiddevelopers254.devfestnairobi.models.SessionsModel
 import droiddevelopers254.devfestnairobi.models.SpeakersModel
-import droiddevelopers254.devfestnairobi.models.StarredSessionModel
 import droiddevelopers254.devfestnairobi.utils.SharedPref.PREF_NAME
 import droiddevelopers254.devfestnairobi.viewmodels.SessionDataViewModel
 import io.reactivex.disposables.CompositeDisposable
@@ -38,14 +35,13 @@ class SessionViewActivity : AppCompatActivity() {
 
     lateinit var sessionDataViewModel: SessionDataViewModel
     private var bottomSheetBehavior: BottomSheetBehavior<*>? = null
-    lateinit var starStatus: String
+    lateinit var sessionName: String
     lateinit var dayNumber: String
     internal var documentId: String? = null
     lateinit var sessionsModel1: SessionsModel
     private var databaseReference: DatabaseReference? = null
     internal var speakersList: List<SpeakersModel> = ArrayList()
     internal var speakerId: List<Int> = ArrayList()
-    internal var starred = false
     private val compositeDisposable = CompositeDisposable()
     lateinit var sharedPreferences: SharedPreferences
     lateinit var isStarred: String
@@ -61,13 +57,13 @@ class SessionViewActivity : AppCompatActivity() {
         val extraIntent = intent
         sessionId = extraIntent.getIntExtra("sessionId", 0)
         dayNumber = extraIntent.getStringExtra("dayNumber")
-        starStatus = extraIntent.getStringExtra("starred")
+        sessionName = extraIntent.getStringExtra("sessionName")
         speakerId = extraIntent.getIntegerArrayListExtra("speakerId")
         roomId = extraIntent.getIntExtra("roomId", 0)
 
         sessionDataViewModel = ViewModelProviders.of(this).get(SessionDataViewModel::class.java)
 
-        getSessionData(dayNumber, sessionId)
+        getSessionData(sessionId)
 
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetView)
         bottomSheetBehavior!!.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
@@ -117,40 +113,11 @@ class SessionViewActivity : AppCompatActivity() {
                 handleFetchRoomDetails(it?.roomModel)
             }
         })
-        sessionDataViewModel.starSessionResponse().observe(this, Observer{
-            if (it?.databaseError != null) {
-                handleStarResponse(it.databaseError)
-            }
-        })
-        sessionDataViewModel.unstarSessionResponse().observe(this, Observer{
-            if (it?.databaseError != null) {
-                handleStarResponse(it.databaseError)
-            }
-        })
-        sessionDataViewModel.dbStarStatus.observe(this, Observer{
-            if (it != null) {
-                if (it > 0) {
-                    isStarred = "1"
-                    fab!!.setImageResource(R.drawable.ic_star_blue_24dp)
-                } else {
-                    isStarred = "0"
-                    fab!!.setImageResource(R.drawable.ic_star_border_black_24dp)
-                }
-            }
-
-        })
         bottomAppBar.replaceMenu(R.menu.menu_bottom_appbar)
 
         //handle menu items on material bottom bar
         bottomAppBar.setOnMenuItemClickListener { item ->
             val id = item.itemId
-            if (id == R.id.action_share) {
-                val shareSession = Intent()
-                shareSession.action = Intent.ACTION_SEND
-                shareSession.putExtra(Intent.EXTRA_TEXT, "Check out " + "'" + sessionId + "' at " + getString(R.string.droidcoke_hashtag) + "\n" + getString(R.string.droidconke_site))
-                shareSession.type = "text/plain"
-                startActivity(shareSession)
-            }
             if (id == R.id.action_map) {
 
                 if (bottomSheetBehavior!!.state != BottomSheetBehavior.STATE_EXPANDED) {
@@ -162,39 +129,13 @@ class SessionViewActivity : AppCompatActivity() {
             }
             false
         }
-        //star a session
-        fab!!.setOnClickListener {
-            if (isStarred == "0") {
-                isStarred = "1"
-                sessionDataViewModel.starrSessionInDb(sessionId, isStarred, dayNumber)
-                Log.d("test", sessionId.toString() + isStarred + dayNumber)
-
-                Toast.makeText(applicationContext, getString(R.string.starred_desc), Toast.LENGTH_SHORT).show()
-
-                fab!!.setImageResource(R.drawable.ic_star_blue_24dp)
-                val starredSessionModel= StarredSessionModel(
-                        sessionsModel1.documentId,
-                        dayNumber,
-                        sessionsModel1.id.toString(),
-                        FirebaseAuth.getInstance().currentUser!!.uid,
-                        true
-                )
-                //star session in starred_sessions collection
-                //this will aid in tracking every starred session and then send a push notification
-                sessionDataViewModel.starSession(starredSessionModel, FirebaseAuth.getInstance().currentUser!!.uid)
-
-            } else if (isStarred == "1") {
-                isStarred = "0"
-                Toast.makeText(applicationContext, getString(R.string.unstarred_desc), Toast.LENGTH_SHORT).show()
-
-                //star a session
-                fab!!.setImageResource(R.drawable.ic_star_border_black_24dp)
-                sessionDataViewModel.unstarrSessionInDb(sessionId, isStarred, dayNumber)
-                Log.d("test", sessionId.toString() + isStarred + dayNumber)
-                //unstar session in starred_sessions collection
-                sessionDataViewModel.unStarSession(sessionsModel1.documentId, FirebaseAuth.getInstance().currentUser!!.uid, false)
-
-            }
+        //share a session
+        fab.setOnClickListener {
+            val shareSession = Intent()
+            shareSession.action = Intent.ACTION_SEND
+            shareSession.putExtra(Intent.EXTRA_TEXT, "Check out " + "'" + sessionName + "' at " + getString(R.string.devfestnairobi_hashtag) + "\n" + getString(R.string.devfestnairobi_site))
+            shareSession.type = "text/plain"
+            startActivity(shareSession)
         }
         //collapse bottom bar
         collapseBottomImg?.setOnClickListener {
@@ -204,17 +145,8 @@ class SessionViewActivity : AppCompatActivity() {
         }
 
     }
-
-    private fun getSessionData(dayNumber: String, sessionId: Int) {
-        sessionDataViewModel.getSessionDetails(dayNumber, sessionId)
-    }
-
-    private fun handleStarUserSession(starMessage: Int) {
-        Toast.makeText(applicationContext, getString(starMessage), Toast.LENGTH_SHORT).show()
-    }
-
-    private fun handleStarResponse(error: String) {
-        Toast.makeText(applicationContext, error, Toast.LENGTH_SHORT).show()
+    private fun getSessionData(sessionId: Int) {
+        sessionDataViewModel.getSessionDetails(sessionId)
     }
 
     private fun getRoomDetails(roomId: Int) {
@@ -222,8 +154,7 @@ class SessionViewActivity : AppCompatActivity() {
     }
 
     private fun handleFetchRoomDetails(roomModel: RoomModel?) {
-
-        roomDetailsText.text = roomModel?.name + "Room capacity is:  ${roomModel?.capacity.toString()}"
+        roomDetailsText.text = roomModel?.name
     }
 
     private fun getSpeakerDetails(speakerId: Int) {
@@ -257,13 +188,12 @@ class SessionViewActivity : AppCompatActivity() {
             //set the data on the view
             txtSessionTime.text = sessionsModel.time
             txtSessionRoom.text = sessionsModel.room
-            txtSessionDesc.text = sessionsModel.description
+            txtSessionDesc.text = sessionsModel.title
             txtSessionCategory.text = sessionsModel.topic
             sessionViewTitleText.text = sessionsModel.title
 
         }
     }
-
     private fun handleDatabaseError(databaseError: String?) {
         Toast.makeText(applicationContext, databaseError, Toast.LENGTH_SHORT).show()
     }

@@ -7,22 +7,24 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="vertical"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin">
 
-        <ImageView
+        <TextView
+            android:id="@+id/eventNameText"
             android:layout_width="match_parent"
-            android:scaleType="centerCrop"
-            android:id="@+id/eventImg"
-            android:src="@drawable/event_image"
-            android:layout_height="150dp" />
+            android:layout_height="wrap_content"
+            android:text="@string/event_name"
+            android:textSize="24sp"
+            android:textColor="@color/colorBlack"/>
         <TextView
             android:layout_width="wrap_content"
             android:lineSpacingExtra="6dp"
             android:id="@+id/eventDescriptionText"
-            android:layout_margin="@dimen/fab_margin"
             android:textSize="16sp"
             tools:text="@string/event_description"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/fab_margin"/>
 
     </LinearLayout>
 

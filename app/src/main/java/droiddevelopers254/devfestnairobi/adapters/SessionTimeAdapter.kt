@@ -11,16 +11,12 @@ import kotlinx.android.synthetic.main.session_time_details.view.*
 
 class SessionTimeAdapter(private val context: Context, private val sessionTimeModelList: List<SessionTimeModel>) : RecyclerView.Adapter<SessionTimeAdapter.MyViewHolder>() {
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        internal var timeSessionText = itemView.timeSessionText
-        internal var amSessionTimeText = itemView.amSessionTimeText
-
         fun bindSessionTime(sessionTimeModel: SessionTimeModel){
             with(sessionTimeModel){
-                timeSessionText.text = sessionHour
-                amSessionTimeText.text = amPm
+                itemView.timeSessionText.text = sessionHour
+                itemView.amSessionTimeText.text = amPm
             }
         }
-
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val itemView = LayoutInflater.from(parent.context)
@@ -34,6 +30,4 @@ class SessionTimeAdapter(private val context: Context, private val sessionTimeMo
     override fun getItemCount(): Int {
         return sessionTimeModelList.size
     }
-
-
 }

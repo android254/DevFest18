@@ -13,18 +13,12 @@ import kotlinx.android.synthetic.main.session_details.view.*
 class SessionsAdapter(private val context: Context, private val sessionsModelList: List<SessionsModel>, private val dayNumber: String) : RecyclerView.Adapter<SessionsAdapter.MyViewHolder>() {
 
      class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val sessionTitleText = itemView.sessionTitleText
-        private val sessionDetailsLinear = itemView.sessionDetailsLinear
-        private val sessionRoomText = itemView.sessionRoomText
-        private val sessionLabelText = itemView.sessionLabelText
-        private val sessionCategoryText = itemView.sessionCategoryText
-
        fun bindSession(sessionsModel: SessionsModel){
            with(sessionsModel){
-               sessionTitleText.text = title
-               sessionLabelText.setBackgroundColor(Color.parseColor(session_color))
-               sessionCategoryText.text = topic
-               sessionRoomText.text= "$duration / $room / $time"
+               itemView.sessionTitleText.text = title
+               itemView.sessionLabelText.setBackgroundColor(Color.parseColor(session_color))
+               itemView.sessionCategoryText.text = topic
+               itemView.sessionRoomText.text= "$duration / $room / $time"
            }
        }
     }
