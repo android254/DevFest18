@@ -57,7 +57,6 @@ class DayOneFragment : Fragment() {
     private fun handleError(databaseError: String?) {
         Toast.makeText(activity, databaseError, Toast.LENGTH_SHORT).show()
     }
-
     private fun initView(sessionsRv: RecyclerView) {
         val sessionsAdapter = SessionsAdapter(activity!!, sessionsModelList, "day_one")
         val layoutManager = LinearLayoutManager(activity)
@@ -75,7 +74,6 @@ class DayOneFragment : Fragment() {
                 startActivity(intent)
             }
             override fun onLongClick(view: View, position: Int) {
-
             }
         }))
 

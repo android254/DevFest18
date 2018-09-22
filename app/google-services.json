@@ -31,6 +31,14 @@
           }
         },
         {
+          "client_id": "130046286967-eama3gvbve21rujhqe9hgk3fuiir45je.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "droiddevelopers254.devfestnairobi",
+            "certificate_hash": "cbde74f11c6688146bc218675cbdc6a833e6c3f6"
+          }
+        },
+        {
           "client_id": "130046286967-ifa1dd3u1of610g648q4h58ck4vgpikj.apps.googleusercontent.com",
           "client_type": 3
         }
