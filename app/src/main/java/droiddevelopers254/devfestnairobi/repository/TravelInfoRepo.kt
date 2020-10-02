@@ -1,8 +1,8 @@
 package droiddevelopers254.devfestnairobi.repository
 
 import android.app.Activity
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import android.content.Context
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import droiddevelopers254.devfestnairobi.models.TravelInfoModel

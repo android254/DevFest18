@@ -1,6 +1,6 @@
 package droiddevelopers254.devfestnairobi.repository
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import droiddevelopers254.devfestnairobi.database.AppDatabase
 import droiddevelopers254.devfestnairobi.database.dao.SessionsDao
 import droiddevelopers254.devfestnairobi.database.dao.StarredSessionDao

@@ -3,7 +3,7 @@ package droiddevelopers254.devfestnairobi.ui
 import android.content.Context
 import android.content.res.Resources
 import android.content.res.TypedArray
-import android.support.v7.content.res.AppCompatResources
+import androidx.appcompat.content.res.AppCompatResources
 import android.transition.Transition
 import android.transition.TransitionInflater
 import android.transition.TransitionManager

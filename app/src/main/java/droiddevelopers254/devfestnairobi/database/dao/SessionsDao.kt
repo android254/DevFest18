@@ -1,13 +1,13 @@
 package droiddevelopers254.devfestnairobi.database.dao
 
-import android.arch.lifecycle.LiveData
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Insert
-import android.arch.persistence.room.Query
+import androidx.lifecycle.LiveData
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.Query
 
 import droiddevelopers254.devfestnairobi.models.SessionsModel
 
-import android.arch.persistence.room.OnConflictStrategy.REPLACE
+import androidx.room.OnConflictStrategy.REPLACE
 
 @Dao
 interface SessionsDao {
