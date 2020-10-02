@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.appcompat.widget.Toolbar
 import android.view.View
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import droiddevelopers254.devfestnairobi.R
@@ -22,27 +23,23 @@ import droiddevelopers254.devfestnairobi.models.SessionsModel
 import droiddevelopers254.devfestnairobi.models.SpeakersModel
 import droiddevelopers254.devfestnairobi.utils.SharedPref.PREF_NAME
 import droiddevelopers254.devfestnairobi.viewmodels.SessionDataViewModel
-import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_session_view.*
 import kotlinx.android.synthetic.main.content_session_view.*
 import kotlinx.android.synthetic.main.room_bottom_sheet.*
 import java.util.*
 
 class SessionViewActivity : AppCompatActivity() {
-    internal var sessionId: Int = 0
-    internal var roomId: Int = 0
-
-
+    private var sessionId: Int = 0
+    private var roomId: Int = 0
     lateinit var sessionDataViewModel: SessionDataViewModel
     private var bottomSheetBehavior: BottomSheetBehavior<*>? = null
-    lateinit var sessionName: String
-    lateinit var dayNumber: String
+    private var sessionName: String? = null
+    private var dayNumber: String? = null
     internal var documentId: String? = null
     lateinit var sessionsModel1: SessionsModel
     private var databaseReference: DatabaseReference? = null
-    internal var speakersList: List<SpeakersModel> = ArrayList()
-    internal var speakerId: List<Int> = ArrayList()
-    private val compositeDisposable = CompositeDisposable()
+    private var speakersList: List<SpeakersModel> = ArrayList()
+    private var speakerId: List<Int> = ArrayList()
     lateinit var sharedPreferences: SharedPreferences
     lateinit var isStarred: String
 
@@ -58,10 +55,10 @@ class SessionViewActivity : AppCompatActivity() {
         sessionId = extraIntent.getIntExtra("sessionId", 0)
         dayNumber = extraIntent.getStringExtra("dayNumber")
         sessionName = extraIntent.getStringExtra("sessionName")
-        speakerId = extraIntent.getIntegerArrayListExtra("speakerId")
+        speakerId = extraIntent.getIntegerArrayListExtra("speakerId")!!
         roomId = extraIntent.getIntExtra("roomId", 0)
 
-        sessionDataViewModel = ViewModelProviders.of(this).get(SessionDataViewModel::class.java)
+        sessionDataViewModel = ViewModelProvider(this).get(SessionDataViewModel::class.java)
 
         getSessionData(sessionId)
 
@@ -183,7 +180,7 @@ class SessionViewActivity : AppCompatActivity() {
         if (sessionsModel != null) {
             sessionsModel1 = sessionsModel
             //check star status
-            sessionDataViewModel.isSessionStarredInDb(sessionId, dayNumber)
+            dayNumber?.let { sessionDataViewModel.isSessionStarredInDb(sessionId, it) }
 
             //set the data on the view
             txtSessionTime.text = sessionsModel.time

@@ -1,17 +1,17 @@
 package droiddevelopers254.devfestnairobi.database.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import droiddevelopers254.devfestnairobi.models.StarredSessionModel
-import io.reactivex.Single
 
 @Dao
 interface StarredSessionDao {
 
     @get:Query("SELECT * FROM starredSessions")
-    val starredSessions: Single<List<StarredSessionModel>>
+    val starredSessions: LiveData<List<StarredSessionModel>>
 
     @Insert(onConflict = REPLACE)
     fun starSession(starredSessionModel: StarredSessionModel)

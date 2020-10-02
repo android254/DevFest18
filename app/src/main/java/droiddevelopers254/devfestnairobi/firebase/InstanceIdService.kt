@@ -7,7 +7,7 @@ import droiddevelopers254.devfestnairobi.utils.SharedPref.PREF_NAME
 
 
 class InstanceIdService : FirebaseMessagingService() {
-    override fun onNewToken(token: String?) {
+    override fun onNewToken(token: String) {
         super.onNewToken(token)
         saveToken(token)
     }
@@ -15,6 +15,5 @@ class InstanceIdService : FirebaseMessagingService() {
     private fun saveToken(token: String?) {
         val sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         sharedPreferences.edit().putString(FIREBASE_TOKEN, token).apply()
-
     }
 }

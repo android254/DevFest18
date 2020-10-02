@@ -6,7 +6,6 @@ import droiddevelopers254.devfestnairobi.database.dao.SessionsDao
 import droiddevelopers254.devfestnairobi.database.dao.StarredSessionDao
 import droiddevelopers254.devfestnairobi.models.StarredSessionModel
 import droiddevelopers254.devfestnairobi.utils.DroidCoin
-import io.reactivex.Single
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
@@ -15,7 +14,7 @@ class RoomStarrSessionRepo {
     private val executor: Executor = Executors.newSingleThreadExecutor()
     private val sessionsDao: SessionsDao =AppDatabase.getDatabase(DroidCoin.context)!!.sessionsDao()
 
-    val starredSessions: Single<List<StarredSessionModel>>
+    val starredSessions: LiveData<List<StarredSessionModel>>
         get() = starredSessionDao.starredSessions
 
     fun starrSession(sessionId: Int, isStarred: String, dayNumber: String) {

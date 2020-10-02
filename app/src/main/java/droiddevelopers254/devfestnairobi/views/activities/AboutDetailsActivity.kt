@@ -25,9 +25,9 @@ import droiddevelopers254.devfestnairobi.viewmodels.AboutDetailsViewModel
 import kotlinx.android.synthetic.main.content_about_details.*
 
 class AboutDetailsActivity : AppCompatActivity() {
-    internal var aboutDetailsList: List<AboutDetailsModel> = ArrayList()
+    private var aboutDetailsList: List<AboutDetailsModel> = ArrayList()
     lateinit var aboutDetailsViewModel: AboutDetailsViewModel
-    lateinit var aboutType: String
+    private var aboutType: String?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +52,7 @@ class AboutDetailsActivity : AppCompatActivity() {
             supportActionBar?.title = getString(R.string.sponsors)
         }
         //fetch about details
-        fetchAboutDetails(aboutType)
+        aboutType?.let { fetchAboutDetails(it) }
 
         //observe live data emitted by view model
         aboutDetailsViewModel.aboutDetails.observe(this, Observer{
